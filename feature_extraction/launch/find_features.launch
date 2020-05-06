@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="feature_extraction" type="featureExtraction.py" name="corner_measurements" output="screen">
+	</node>
+</launch>
