@@ -1,0 +1,2 @@
+navigation
+-DCATKIN_DEVEL_PREFIX=/home/sam/multi_SLAM/devel -DCMAKE_INSTALL_PREFIX=/home/sam/multi_SLAM/install -G Unix Makefiles
