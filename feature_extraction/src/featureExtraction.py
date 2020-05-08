@@ -9,6 +9,7 @@ from feature_extraction.msg import corners_and_lines
 
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 
 # plot laserscan data
@@ -86,7 +87,7 @@ def feature_extraction(msg):
     ransacIterations = 100 # number of random lines to search along
     distanceThreshold = .03 # maximum distance for a point belong to a line
     linePointsThreshold = 30 # number of points to define a line
-    np.random.seed(2) # seed number generator
+    #np.random.seed(2) # seed number generator
     newLines = []
     mNew = []
     endPoints = np.array([[],[],[]])
@@ -96,6 +97,10 @@ def feature_extraction(msg):
     unmatchedCoordinates = np.vstack([unmatchedCoordinates,pointIndex])
 
     for iLoop in range(ransacIterations):
+
+        # check that we have enough points to define a line
+        if unmatchedCoordinates[0,:].size < linePointsThreshold:
+            break
 
         # select 2 random points that aren't infinite value
         point1, point2, testPoints, shuffledIndex = sample_two_points(unmatchedCoordinates)
@@ -112,7 +117,7 @@ def feature_extraction(msg):
 
         # plot line from two points and test points
         # plt.figure(2).clf()
-        # drawLine = plt.figure(2)
+        # drawLine = plt.figure(2)t
         # plt.scatter(testPoints[0,:],testPoints[1,:],label='unmatched points')
         # plt.plot(matchedLine[0,0:2],matchedLine[1,0:2],marker='x',color='r',label='two selected points')
         # plt.xlim(-3.6,3.6)
@@ -266,6 +271,8 @@ def feature_extraction(msg):
     plt.annotate('#lines = ' + str(endPoints[0,:].size/2), xy=(0,-.25) )
     plt.ylabel('distance (meters)')
     plt.xlabel('distance (meters)')
+    plt.ylim(-4,4)
+    plt.xlim(-4,4)
     plt.pause(0.00000000000001)
 
     # reshape for publishing to ros topic
@@ -285,11 +292,21 @@ def feature_extraction(msg):
 
 
 # main
-print 'feature extraction started'
-rospy.init_node('featureExtraction')
-rospy.sleep(0.1)
-pub = rospy.Publisher('/features', corners_and_lines, queue_size=10)
-sub = rospy.Subscriber('/scan', LaserScan, feature_extraction)
+if __name__=="__main__":
+    print 'feature extraction started'
+    if len(sys.argv) > 1:
+        tb3_name = str(sys.argv[1])
+        publish_name = tb3_name + '/features'
+        subscriber_name = tb3_name + '/scan'
+    else:
+        publish_name = 'features'
+        subscriber_name = 'scan'
+    print publish_name
 
-plt.show()
-rospy.spin()
+    rospy.init_node('featureExtraction')
+    rospy.sleep(0.1)
+    pub = rospy.Publisher(publish_name, corners_and_lines, queue_size=10)
+    sub = rospy.Subscriber(subscriber_name, LaserScan, feature_extraction)
+
+    plt.show()
+    rospy.spin()
