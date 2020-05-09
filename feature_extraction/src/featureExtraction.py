@@ -260,20 +260,20 @@ def feature_extraction(msg):
     cornerPoint = np.matmul(rot, cornerPoint)
 
     # plot end points, corners, and laser data
-    plt.figure(4)
-    plt.cla()
-    plt.scatter(coordinates[0,:],coordinates[1,:], color = 'b',label='laser data')
-    plt.scatter(endPoints[0,:],endPoints[1,:],color='red',marker='D',label='end points')
-    plt.scatter(cornerPoint[0,:],cornerPoint[1,:],marker='.',label='corner measurements',color='orange')
-    plt.legend()
-    plt.title('Features Extracted')
-    plt.annotate('#corners = ' + str(cornerPoint[0,:].size), xy=(0,0) )
-    plt.annotate('#lines = ' + str(endPoints[0,:].size/2), xy=(0,-.25) )
-    plt.ylabel('distance (meters)')
-    plt.xlabel('distance (meters)')
-    plt.ylim(-4,4)
-    plt.xlim(-4,4)
-    plt.pause(0.00000000000001)
+    # plt.figure(4)
+    # plt.cla()
+    # plt.scatter(coordinates[0,:],coordinates[1,:], color = 'b',label='laser data')
+    # plt.scatter(endPoints[0,:],endPoints[1,:],color='red',marker='D',label='end points')
+    # plt.scatter(cornerPoint[0,:],cornerPoint[1,:],marker='.',label='corner measurements',color='orange')
+    # plt.legend()
+    # plt.title('Features Extracted')
+    # plt.annotate('#corners = ' + str(cornerPoint[0,:].size), xy=(0,0) )
+    # plt.annotate('#lines = ' + str(endPoints[0,:].size/2), xy=(0,-.25) )
+    # plt.ylabel('distance (meters)')
+    # plt.xlabel('distance (meters)')
+    # plt.ylim(-4,4)
+    # plt.xlim(-4,4)
+    # plt.pause(0.00000000000001)
 
     # reshape for publishing to ros topic
     cornerPointStack = []
@@ -308,5 +308,6 @@ if __name__=="__main__":
     pub = rospy.Publisher(publish_name, corners_and_lines, queue_size=10)
     sub = rospy.Subscriber(subscriber_name, LaserScan, feature_extraction)
 
-    plt.show()
+    # show new plot
+    # plt.show()
     rospy.spin()
