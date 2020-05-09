@@ -168,6 +168,8 @@ def feature_extraction(msg):
             yP = mNew*xP + bNew # point on line
 
             # find distance to point on line
+            endPoint1 = []
+            endPoint2 = []
             for iNorm in range(len(matchedLine[0,:])):
                 x0 = matchedLine[0,iNorm]
                 y0 = matchedLine[1,iNorm]
@@ -182,9 +184,9 @@ def feature_extraction(msg):
                     endPoint2 = np.array([[x0],[y0],[matchedLine[2,iNorm]]])
 
             # define endpoint if we measured distance from the end point
-            if not endPoint1[0]:
+            if len(endPoint1) == 0:
                 endPoint1 = np.array([[matchedLine[0,0]],[matchedLine[1,0]],[matchedLine[2,0]]])
-            if not endPoint2[0]:
+            if len(endPoint2) == 0:
                 endPoint2 = np.array([[matchedLine[0,0]],[matchedLine[1,0]],[matchedLine[2,0]]])
 
             # add new end points of line to array
@@ -259,7 +261,7 @@ def feature_extraction(msg):
     endPoints = np.matmul(rot, endPoints)
     cornerPoint = np.matmul(rot, cornerPoint)
 
-    # plot end points, corners, and laser data
+    #plot end points, corners, and laser data
     # plt.figure(4)
     # plt.cla()
     # plt.scatter(coordinates[0,:],coordinates[1,:], color = 'b',label='laser data')
@@ -271,8 +273,8 @@ def feature_extraction(msg):
     # plt.annotate('#lines = ' + str(endPoints[0,:].size/2), xy=(0,-.25) )
     # plt.ylabel('distance (meters)')
     # plt.xlabel('distance (meters)')
-    # plt.ylim(-4,4)
-    # plt.xlim(-4,4)
+    # # plt.ylim(-4,4)
+    # # plt.xlim(-4,4)
     # plt.pause(0.00000000000001)
 
     # reshape for publishing to ros topic
@@ -301,13 +303,13 @@ if __name__=="__main__":
     else:
         publish_name = 'features'
         subscriber_name = 'scan'
-    print publish_name
+
 
     rospy.init_node('featureExtraction')
     rospy.sleep(0.1)
     pub = rospy.Publisher(publish_name, corners_and_lines, queue_size=10)
     sub = rospy.Subscriber(subscriber_name, LaserScan, feature_extraction)
 
-    # show new plot
+    #show new plot
     # plt.show()
     rospy.spin()
