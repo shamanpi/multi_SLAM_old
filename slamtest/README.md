@@ -1,0 +1,1 @@
+hw2.cpp contains the actual underlying methods, and hw2_test.cpp contains all of the support and main methods. Adapting this code therefore requires editing hw2_test.cpp.
