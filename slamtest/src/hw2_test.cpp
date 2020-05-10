@@ -4,6 +4,9 @@
 
 #include <random>
 #include <iostream>
+#include <ros/ros.h>
+#include <feature_extraction/corners_and_lines.h>
+#include <cstring>
 
 #ifndef M_PI
 #define M_PI 3.141592653589793
@@ -128,7 +131,7 @@ void TestRelPosSLAM() {
         x_t = x_new;
         Sigma_t = Sigma_new;
 
-        
+
 
 
       }
@@ -160,7 +163,7 @@ void TestRelPosSLAM() {
         x_t = x_new;
         Sigma_t = Sigma_new;
 
-        
+
 
 
       }
@@ -185,7 +188,7 @@ void TestRelPosSLAM() {
     for (size_t j = 0; j < landmarks.size(); ++j) {
       vis.AddTempEllipse(landmarks[j].head<2>(), 0.0001 * Eigen::Matrix2d::Identity(), Color::BLUE, 2);
     }
-    
+
     //vis.UpdateLines();
 
   // Run an EKFSLAMPropagation step
@@ -234,13 +237,13 @@ void TestRelPosSLAM() {
         Sigma_temp.block(0,0,len2,3) = Sigma_t.block(0,0,len2,3);
         Sigma_temp.block(0,0,3,len2) = Sigma_t.block(0,0,3,len2);
         Sigma_t = Sigma_temp;
- 
+
 
 
       }
     }*/
 
-    
+
     // Draw the current state
    /* vis.ClearTempLines();
     // Draw the trajectory and the estimated trajectory
@@ -266,7 +269,7 @@ void TestRelPosSLAM() {
     for (size_t j = 0; j < landmarks.size(); ++j) {
       vis.AddTempEllipse(landmarks[j].head<2>(), 0.0001 * Eigen::Matrix2d::Identity(), Color::BLUE, 2);
     }
-    
+
     vis.UpdateLines();
 
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -274,10 +277,22 @@ void TestRelPosSLAM() {
   vis.PauseFigure(-1);*/
 }}
 
-int main() {
- 
+int main(int argc, char** argv) {
+
   {
+    // specific node name and handle
+    ros::init(argc, argv,"slam");
+    ros::NodeHandle nh;
+
+    // subscribe to the feature and commanded velocity topics
+    //ros::Subscriber tb3_1_featureSub = nh.subscribe("/tb3_1/features", 100);
+    // ros::Subscriber tb3_0_inputSub = nh.subscribe("/tb3_0/cmd_vel", 100);
+    // ros::Subscriber tb3_1_inputSub = nh.subscribe("/tb3_0/cmd_vel", 100);
+
     // Now generate a new scene for SLAM and try to Update estimates through it
     TestRelPosSLAM();
+
+    // run until stopped
+    // ros::spin();
   }
 }

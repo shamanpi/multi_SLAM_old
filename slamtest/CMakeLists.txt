@@ -10,8 +10,13 @@ project(slamtest)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  cmake_modules
+	
 )
 
+
+find_package(Eigen REQUIRED)
+find_package(feature_extraction REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -107,7 +112,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES slamtest
   CATKIN_DEPENDS roscpp rospy
-  DEPENDS system_lib
+  DEPENDS system_lib Eigen
 )
 
 ###########
@@ -116,19 +121,22 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-find_package(catkin REQUIRED cmake_modules)
-find_package(Eigen REQUIRED)
 
-catkin_package(
+
+
+#catkin_package(
   #INCLUDE_DIRS ...
   #LIBRARIES ...
   #CATKIN_DEPENDS ....
-  DEPENDS Eigen
-)
+#  DEPENDS Eigen
+#)
 
 include_directories(
-   ...
+   
+   ${catkin_INCLUDE_DIRS}
    ${Eigen_INCLUDE_DIRS}
+   ${feature_extraction_INCLUDE_DIRS}
+
  )
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -143,7 +151,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(hw2_test src/hw2_test.cpp src/hw2.cpp src/hw2.h visualization/vis.h visualization/opengl/glvis.h)
+ add_executable(hw2_test src/hw2_test.cpp src/hw2.cpp src/hw2.h )
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -155,10 +163,13 @@ include_directories(
 ## same as for the library above
 add_dependencies(hw2_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+
 ## Specify libraries to link a library or executable target against
  target_link_libraries(hw2_test
    ${catkin_LIBRARIES}
    ${Eigen_LIBRARIES}
+   ${feature_extraction_LIBARARIES}
+	
  )
 
 #############

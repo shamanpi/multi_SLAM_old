@@ -57,7 +57,9 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <build_depend>cmake_modules</build_depend> 
+  <build_depend>feature_extraction</build_depend>
   <exec_depend>cmake_modules</exec_depend>
+  <exec_depend>feature_extraction</exec_depend>
 
 
 
