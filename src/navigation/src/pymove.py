@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 
 # Grabs the velocity and turning speed based upon laser measurements
 def get_move(measurements, increment):
-    d = 0.5
+    d = 0.4
     num_meas = len(measurements)
     fleft = measurements[int(1.0 / 16.0 * num_meas):int(3.0 / 16.0 * num_meas)]
     front = measurements[int(-1.0 / 16.0 * num_meas):] + measurements[:int(1.0 / 16.0 * num_meas)]
@@ -16,17 +16,17 @@ def get_move(measurements, increment):
     print('lens: ', len(fleft), len(front), len(fright))
     print('means: ', np.mean(fleft), np.mean(front), np.mean(fright))
     print('mins: ', np.min(fleft), np.min(front), np.min(fright))
-
+    
     fleft = min(min(fleft), 10)
     front = min(min(front), 10)
     fright = min(min(fright), 10)
 
     # find wall, move forward and right
     if (front > d and fleft > d and fright > d) or (front > d and fleft < d and fright > d) or (front > d and fleft < d and fright < d):
-        return 0.2, -0.3
+        return 0.2, -0.4
     # follow wall, move forward
-    elif front > d and fleft < d and fright < d:
-        return 0.5, 0.0
+    elif front > d and fleft > d and fright < d:
+        return 0.4, 0.0
     # turn left, move left
     else:
         return 0.0, 0.3
@@ -37,10 +37,8 @@ class Mover(object):
         self.vel = 0
         self.turn = 0
         self.last_move = 0
-        self.mode = EXPLORE
 
         rospy.init_node('mover')
-        # self.pub = rospy.Publisher('%s/cmd_vel' % self.ns, Twist, queue_size=10)
         self.pub = rospy.Publisher('%scmd_vel' % rospy.get_namespace(), Twist, queue_size=10)
         self.sub = 0
 
@@ -50,8 +48,6 @@ class Mover(object):
         msg.linear.x = self.vel
         msg.angular.z = self.turn
         self.pub.publish(msg)
-        m = ['', 'SCAN', 'EXPLORE', 'FOLLOW'][self.mode]
-        print("MODE: %s, %3f, %3f" % (m, self.vel, self.turn))
         # print("Updated: ", self.vel, self.turn, self.mode, msg)
 
     def run(self):
