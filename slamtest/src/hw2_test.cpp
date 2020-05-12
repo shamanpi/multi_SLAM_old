@@ -16,8 +16,8 @@
 #endif
 
 // Landmark and movement definitions, for use with the callback functions
-std::vector<Eigen::VectorXd> landmarks_0(50, Eigen::Vector2d::Zero());
-std::vector<Eigen::VectorXd> landmarks_1(50, Eigen::Vector2d::Zero());
+std::vector<Eigen::VectorXd> landmarks_0(0, Eigen::Vector2d::Zero());
+std::vector<Eigen::VectorXd> landmarks_1(0, Eigen::Vector2d::Zero());
 Eigen::VectorXd u(4);
 
 
@@ -26,7 +26,8 @@ void TestRelPosSLAM(ros::Publisher& slam_pub, feature_extraction::corners_and_li
   double std_x = 0.05;  // initial covariance
   
   Eigen::MatrixXd Sigma_t = std_x * std_x * Eigen::MatrixXd::Identity(6,6);
-  Eigen::VectorXd x_t <<-12.0, 11.0, M_PI_2,-12.0, 7.0, -M_PI_2;
+  Eigen::VectorXd x_t(6);
+  x_t <<-12.0, 11.0, M_PI_2,-12.0, 7.0, -M_PI_2;
 
   // Noise Covariance:
   double std_n = 0.03;
@@ -34,10 +35,14 @@ void TestRelPosSLAM(ros::Publisher& slam_pub, feature_extraction::corners_and_li
   double std_m = 0.03;
   Eigen::Matrix2d Sigma_m = std_m * std_m * Eigen::MatrixXd::Identity(2,2);
 
-  double dt = 0.1;
+  double dt = 0.01;
   int i = 0;
   ros::Rate r(100);
-  while(ros::ok()) {    
+  while(ros::ok()) {
+    for (int i = 0; i < 4; i++)
+      std::cout << u[i];
+    std::cout << '\n';
+     
     // Run an EKFSLAMPropagation step
     Eigen::VectorXd x_new;
     Eigen::MatrixXd Sigma_new;
@@ -105,7 +110,8 @@ void TestRelPosSLAM(ros::Publisher& slam_pub, feature_extraction::corners_and_li
 
 void landmarks_0_callback(const feature_extraction::corners_and_lines::ConstPtr& msg){
   std::vector<float> tb3_0_msmts = msg->corners;
-  std::vector<Eigen::VectorXd> landmarks_0(tb3_0_msmts.size() / 2, Eigen::Vector2d::Zero());
+  std::cout << tb3_0_msmts.size() << std::endl;
+  landmarks_0.resize(tb3_0_msmts.size() / 2);
   std::vector<Eigen::VectorXd>::iterator l_it = landmarks_0.begin();
   for (std::vector<float>::iterator it = tb3_0_msmts.begin() ; it != tb3_0_msmts.end(); ++it, ++l_it){
     Eigen::VectorXd dummy = Eigen::Vector2d::Zero();
@@ -118,7 +124,7 @@ void landmarks_0_callback(const feature_extraction::corners_and_lines::ConstPtr&
 
 void landmarks_1_callback(const feature_extraction::corners_and_lines::ConstPtr& msg){
   std::vector<float> tb3_1_msmts = msg->corners;
-  std::vector<Eigen::VectorXd> landmarks_1(tb3_1_msmts.size() / 2, Eigen::Vector2d::Zero());
+  landmarks_1.resize(tb3_1_msmts.size() / 2);
   std::vector<Eigen::VectorXd>::iterator l_it = landmarks_1.begin();
   for (std::vector<float>::iterator it = tb3_1_msmts.begin() ; it != tb3_1_msmts.end(); ++it, ++l_it){
     Eigen::VectorXd dummy = Eigen::Vector2d::Zero();

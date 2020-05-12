@@ -1,0 +1,6 @@
+<launch>
+
+	<node name="visualizer" pkg="visualizer" type="visualizer.py" output="screen"/>
+	<node name="visualizer2" pkg="visualizer" type="visualizer2.py" output="screen"/>
+
+</launch>

@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   cmake_modules
-	
+  geometry_msgs
 )
 
 
@@ -151,7 +151,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(hw2_test src/hw2_test.cpp src/hw2.cpp src/hw2.h )
+add_executable(hw2_test src/hw2_test.cpp src/hw2.cpp src/hw2.h )
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
