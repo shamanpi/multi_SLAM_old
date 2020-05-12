@@ -22,14 +22,14 @@ def get_move(measurements, increment):
     fright = min(min(fright), 10)
 
     # find wall, move forward and right
-    if (front > d and fleft > d and fright > d) or (front > d and fleft < d and fright > d) or (front > d and fleft < d and fright < d):
-        return 0.2, -0.4
+    if (front > d and fleft < d and fright < d) or (front > d and fleft > d and fright < d) or (front > d and fleft > d and fright > d):
+        return 0.2, 0.4
     # follow wall, move forward
-    elif front > d and fleft > d and fright < d:
+    elif front > d and fleft < d and fright > d:
         return 0.4, 0.0
     # turn left, move left
     else:
-        return 0.0, 0.3
+        return 0.0, -0.3
 
 class Mover(object):
     def __init__(self, namespace):
@@ -60,7 +60,7 @@ def main(argv):
     if len(argv) > 2:
         ns = argv[1]
     else:
-        ns = '/tb3_0'
+        ns = '/tb3_1'
     movers = []
     m = Mover(ns)
     m.run()

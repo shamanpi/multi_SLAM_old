@@ -307,8 +307,10 @@ if __name__=="__main__":
 
     rospy.init_node('featureExtraction')
     rospy.sleep(0.1)
-    pub = rospy.Publisher(publish_name, corners_and_lines, queue_size=10)
-    sub = rospy.Subscriber(subscriber_name, LaserScan, feature_extraction)
+    # pub = rospy.Publisher(publish_name, corners_and_lines, queue_size=10)
+    # sub = rospy.Subscriber(subscriber_name, LaserScan, feature_extraction)
+    pub = rospy.Publisher('%sfeatures' % rospy.get_namespace(), corners_and_lines, queue_size=10)
+    sub = rospy.Subscriber('%sscan' % rospy.get_namespace(), LaserScan, feature_extraction)
 
     #show new plot
     # plt.show()
