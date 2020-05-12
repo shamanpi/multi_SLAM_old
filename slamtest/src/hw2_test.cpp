@@ -6,7 +6,6 @@
 #include <iostream>
 #include <ros/ros.h>
 #include <feature_extraction/corners_and_lines.h>
-#include <cstring>
 
 #ifndef M_PI
 #define M_PI 3.141592653589793
@@ -15,7 +14,7 @@
 #define M_PI_2 1.5707963267948966
 #endif
 
-
+std::vector<float> tb3_0_msmts;
 
 
 void TestRelPosSLAM() {
@@ -277,22 +276,33 @@ void TestRelPosSLAM() {
   vis.PauseFigure(-1);*/
 }}
 
+
+void feature1callback(const feature_extraction::corners_and_lines::ConstPtr& msg){
+     std::cout << "out" << '\n';
+     //std::cout << msg -> corners << '\n';
+      //ROS_INFO("%s",msg->corners);
+
+      tb3_0_msmts = msg->corners;
+
+}
+
+
 int main(int argc, char** argv) {
 
   {
     // specific node name and handle
     ros::init(argc, argv,"slam");
     ros::NodeHandle nh;
-
+    std::cout << "/* message */" << '\n';
     // subscribe to the feature and commanded velocity topics
-    //ros::Subscriber tb3_1_featureSub = nh.subscribe("/tb3_1/features", 100);
+    ros::Subscriber tb3_1_featureSub = nh.subscribe("tb3_1/features", 100,feature1callback);
     // ros::Subscriber tb3_0_inputSub = nh.subscribe("/tb3_0/cmd_vel", 100);
     // ros::Subscriber tb3_1_inputSub = nh.subscribe("/tb3_0/cmd_vel", 100);
-
+    //std::cout << tb3_0_msmts << '\n';
     // Now generate a new scene for SLAM and try to Update estimates through it
-    TestRelPosSLAM();
+    //TestRelPosSLAM();
 
     // run until stopped
-    // ros::spin();
+    ros::spin();
   }
 }
